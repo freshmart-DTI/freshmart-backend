@@ -1,5 +1,6 @@
 package com.freshmart.backend.product.entity;
 
+import com.freshmart.backend.product.dto.ProductDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -34,4 +35,13 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
+    public ProductDto toDto() {
+        ProductDto productDto = new ProductDto();
+        productDto.setName(name);
+        productDto.setPrice(price);
+        productDto.setDescription(description);
+
+        return productDto;
+    }
 }
