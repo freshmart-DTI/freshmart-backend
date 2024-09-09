@@ -27,7 +27,8 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/api/v1/products", "/api/v1/products/**").permitAll();
+                    auth.requestMatchers("/api/v1/products").permitAll();
+                    auth.requestMatchers("/api/v1/categories").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .httpBasic(Customizer.withDefaults())
