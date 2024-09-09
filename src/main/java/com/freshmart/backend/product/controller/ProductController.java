@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,5 +28,11 @@ public class ProductController {
     public ResponseEntity<?> getAllProducts() {
         List<ProductDto> productDtos = productService.getAllProducts();
         return Response.success("List of products fetched", productDtos);
+    }
+
+    @PostMapping()
+    public ResponseEntity<?> createProduct() {
+//        ProductDto newProduct = productService.createProduct(productDto);
+        return Response.success("Product created successfully");
     }
 }
