@@ -1,5 +1,6 @@
 package com.freshmart.backend.product.service.impl;
 
+import com.freshmart.backend.product.dto.CategoryDto;
 import com.freshmart.backend.product.entity.Category;
 import com.freshmart.backend.product.repository.CategoryRepository;
 import com.freshmart.backend.product.service.CategoryService;
@@ -21,7 +22,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category createCategory() {
-        return null;
+    public Category createCategory(CategoryDto categoryDto) {
+        Category category = categoryDto.toEntity();
+
+        return categoryRepository.save(category);
     }
 }
