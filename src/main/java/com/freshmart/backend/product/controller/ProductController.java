@@ -3,6 +3,7 @@ package com.freshmart.backend.product.controller;
 import com.freshmart.backend.product.dto.ProductDto;
 import com.freshmart.backend.product.service.ProductService;
 import com.freshmart.backend.product.service.impl.ProductServiceImpl;
+import com.freshmart.backend.response.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -25,6 +26,6 @@ public class ProductController {
     @GetMapping()
     public ResponseEntity<?> getAllProducts() {
         List<ProductDto> productDtos = productService.getAllProducts();
-        return ResponseEntity.ok().body(productDtos);
+        return Response.success("List of products fetched", productDtos);
     }
 }
