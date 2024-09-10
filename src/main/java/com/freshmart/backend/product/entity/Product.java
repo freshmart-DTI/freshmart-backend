@@ -5,8 +5,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.List;
 
 @Entity
 @Data
@@ -35,6 +38,13 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ProductImage> productImages;
+
+    @CreationTimestamp
+    @Column(updatable = false, nullable = false)
+    private Instant createdAt;
 
     public ProductDto toDto() {
         ProductDto productDto = new ProductDto();
