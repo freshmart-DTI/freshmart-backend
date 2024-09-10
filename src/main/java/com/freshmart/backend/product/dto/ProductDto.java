@@ -11,6 +11,7 @@ public class ProductDto {
     private String name;
     private BigDecimal price;
     private String description;
+    private Long categoryId;
 
     public Product toEntity() {
         Product product = new Product();

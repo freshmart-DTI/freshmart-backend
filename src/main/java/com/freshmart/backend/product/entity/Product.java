@@ -48,9 +48,11 @@ public class Product {
 
     public ProductDto toDto() {
         ProductDto productDto = new ProductDto();
+        productDto.setId(id);
         productDto.setName(name);
         productDto.setPrice(price);
         productDto.setDescription(description);
+        productDto.setCategoryId(category.getId());
 
         return productDto;
     }
