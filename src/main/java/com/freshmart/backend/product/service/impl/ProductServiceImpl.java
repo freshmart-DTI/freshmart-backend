@@ -18,10 +18,12 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryServiceImpl categoryService;
+    private final ImageUploadServiceImpl imageUploadService;
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryServiceImpl categoryService) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryServiceImpl categoryService, ImageUploadServiceImpl imageUploadService) {
         this.productRepository = productRepository;
         this.categoryService = categoryService;
+        this.imageUploadService = imageUploadService;
     }
 
     @Override
@@ -33,7 +35,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductDto createProduct(ProductDto productDto, List<MultipartFile> images) {
+    public ProductDto createProduct(ProductDto productDto, List<MultipartFile> images) throws Exception {
         Product product = productDto.toEntity();
 
         Category category = categoryService.getCategoryById(productDto.getCategoryId());
@@ -42,7 +44,7 @@ public class ProductServiceImpl implements ProductService {
         List<ProductImage> productImages = new ArrayList<>();
 
         for(MultipartFile image : images) {
-            String imageUrl = "test";
+            String imageUrl = imageUploadService.uploadImage(image, "products");
 
             ProductImage productImage = new ProductImage();
             productImage.setUrl(imageUrl);
