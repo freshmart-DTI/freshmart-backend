@@ -6,6 +6,7 @@ import com.freshmart.backend.product.entity.Product;
 import com.freshmart.backend.product.entity.ProductImage;
 import com.freshmart.backend.product.repository.ProductRepository;
 import com.freshmart.backend.product.service.ProductService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,5 +58,12 @@ public class ProductServiceImpl implements ProductService {
         Product savedProduct = productRepository.save(product);
 
         return savedProduct.toDto();
+    }
+
+    @Override
+    public void deleleProduct(Long productId) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new EntityNotFoundException("Product with id: " + productId + " not found"));
+
+        productRepository.delete(product);
     }
 }

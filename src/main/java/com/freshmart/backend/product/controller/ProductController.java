@@ -39,4 +39,10 @@ public class ProductController {
 
         return Response.success(HttpStatus.CREATED.value(), "Product created successfully", newProduct);
     }
+
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<?> deleteProduct(@PathVariable("productId") Long productId) {
+        productService.deleleProduct(productId);
+        return Response.success("Product deleted successfully");
+    }
 }
