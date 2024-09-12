@@ -1,6 +1,7 @@
 package com.freshmart.backend.product.entity;
 
 import com.freshmart.backend.product.dto.ProductDto;
+import com.freshmart.backend.product.dto.ProductImageDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,6 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -53,6 +55,11 @@ public class Product {
         productDto.setPrice(price);
         productDto.setDescription(description);
         productDto.setCategoryId(category.getId());
+
+        List<ProductImageDto> productImageDtos = productImages.stream().map(ProductImage::toDto)
+                .collect(Collectors.toList());
+
+        productDto.setProductImages(productImageDtos);
 
         return productDto;
     }

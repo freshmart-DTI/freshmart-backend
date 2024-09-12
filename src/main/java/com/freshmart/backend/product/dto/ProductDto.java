@@ -1,9 +1,11 @@
 package com.freshmart.backend.product.dto;
 
 import com.freshmart.backend.product.entity.Product;
+import com.freshmart.backend.product.entity.ProductImage;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 public class ProductDto {
@@ -11,6 +13,7 @@ public class ProductDto {
     private String name;
     private BigDecimal price;
     private String description;
+    private List<ProductImageDto> productImages;
     private Long categoryId;
 
     public Product toEntity() {

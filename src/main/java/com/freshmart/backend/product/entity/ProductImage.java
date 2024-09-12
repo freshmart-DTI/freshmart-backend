@@ -1,5 +1,6 @@
 package com.freshmart.backend.product.entity;
 
+import com.freshmart.backend.product.dto.ProductImageDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,4 +30,13 @@ public class ProductImage {
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
     private Instant createdAt;
+
+    public ProductImageDto toDto() {
+        ProductImageDto productImageDto = new ProductImageDto();
+
+        productImageDto.setId(id);
+        productImageDto.setUrl(url);
+
+        return productImageDto;
+    }
 }
