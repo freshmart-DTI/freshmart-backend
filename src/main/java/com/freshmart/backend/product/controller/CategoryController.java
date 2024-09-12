@@ -27,15 +27,21 @@ public class CategoryController {
         return Response.success("List of categories fetched", categories);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getCategoryById(@PathVariable("id") Long id) {
+        Category category = categoryService.getCategoryById(id);
+        return Response.success("Category details retrieved successfully", category);
+    }
+
     @PostMapping()
     public ResponseEntity<?> createCategory(@RequestBody CategoryDto categoryDto) {
         Category category = categoryService.createCategory(categoryDto);
         return Response.success(HttpStatus.CREATED.value(), "Category created successfully", category);
     }
 
-    @PutMapping("/{categoryId}")
-    public ResponseEntity<?> updateCategory(@PathVariable("categoryId") Long categoryId, @RequestBody CategoryDto categoryDto) {
-        Category category = categoryService.editCategory(categoryId, categoryDto);
-        return Response.success("Category with id: " + categoryId + " updated", category);
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateCategory(@PathVariable("id") Long id, @RequestBody CategoryDto categoryDto) {
+        Category category = categoryService.editCategory(id, categoryDto);
+        return Response.success("Category with id: " + id + " updated", category);
     }
 }
