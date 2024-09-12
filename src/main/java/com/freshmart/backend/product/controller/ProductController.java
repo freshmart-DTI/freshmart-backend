@@ -31,6 +31,12 @@ public class ProductController {
         return Response.success("List of products fetched", productDtos);
     }
 
+    @GetMapping("/{productId}")
+    public ResponseEntity<?> getProductById(@PathVariable("productId") Long productId) {
+        ProductDto productDto = productService.getProductById(productId);
+        return Response.success("Product details retrieved successfully", productDto);
+    }
+
     @PostMapping()
     public ResponseEntity<?> createProduct(@RequestPart("productDto") String productDtoJson, @RequestPart("images") List<MultipartFile> images) throws Exception {
 

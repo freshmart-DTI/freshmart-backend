@@ -35,6 +35,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public ProductDto getProductById(Long productId) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new EntityNotFoundException("Product with id: " + productId + " not found"));
+
+        return product.toDto();
+    }
+
+    @Override
     @Transactional
     public ProductDto createProduct(ProductDto productDto, List<MultipartFile> images) throws Exception {
         Product product = productDto.toEntity();

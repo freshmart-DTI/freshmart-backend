@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface ProductService {
     List<ProductDto> getAllProducts();
+    ProductDto getProductById(Long productId);
     ProductDto createProduct(ProductDto productDto, List<MultipartFile> images) throws Exception;
     void deleleProduct(Long productId);
 }
