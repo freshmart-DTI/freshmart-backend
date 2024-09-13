@@ -1,6 +1,7 @@
 package com.freshmart.backend.product.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.freshmart.backend.discount.entity.Discount;
 import com.freshmart.backend.inventory.entity.Inventory;
 import com.freshmart.backend.product.dto.ProductDto;
 import com.freshmart.backend.product.dto.ProductImageDto;
@@ -49,6 +50,10 @@ public class Product {
     @JsonIgnore
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Inventory> inventories;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Discount> discounts;
 
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
