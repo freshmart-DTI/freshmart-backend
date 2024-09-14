@@ -27,9 +27,16 @@ public class InventoryController {
         return Response.success("List of inventories fetched", inventories);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getInventoryById(@PathVariable("id") Long id) {
+        InventoryDto inventoryDto = inventoryService.getInventoryById(id);
+        return Response.success("Inventory with id: " +  id + " fetched", inventoryDto);
+    }
+
     @PostMapping()
     public ResponseEntity<?> createInventory(@Valid @RequestBody InventoryDto inventoryDto) {
         Inventory inventory = inventoryService.createInventory(inventoryDto);
         return Response.success("Inventory created successfully", inventory);
     }
+
 }

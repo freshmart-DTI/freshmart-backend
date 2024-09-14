@@ -8,6 +8,6 @@ import java.util.List;
 public interface InventoryService {
     List<InventoryDto> getAllInventories(Long storeId);
     Inventory createInventory(InventoryDto inventoryDto);
-    Inventory getInventoryById();
+    InventoryDto getInventoryById(Long id);
     void deleteInventory();
 }

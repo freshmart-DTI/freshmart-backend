@@ -6,6 +6,7 @@ import com.freshmart.backend.inventory.repository.InventoryRepository;
 import com.freshmart.backend.inventory.service.InventoryService;
 import com.freshmart.backend.product.entity.Product;
 import com.freshmart.backend.product.service.impl.ProductServiceImpl;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -50,8 +51,9 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public Inventory getInventoryById() {
-        return null;
+    public InventoryDto getInventoryById(Long id) {
+        Inventory inventory = inventoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Inventory with id: " + id + " not found"));
+        return inventory.toDto();
     }
 
     @Override
