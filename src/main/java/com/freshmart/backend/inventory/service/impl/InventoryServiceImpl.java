@@ -57,6 +57,20 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
+    public Inventory updateInventory(Long inventoryId, InventoryDto inventoryDto) {
+        Inventory inventory = inventoryRepository.findById(inventoryId).orElseThrow(() -> new EntityNotFoundException("Inventory with id: " + inventoryId + " not found"));
+
+        Product product = productService.getProductById(inventoryDto.getProductId()).toEntity();
+        inventory.setProduct(product);
+        inventory.setQuantity(inventoryDto.getQuantity());
+        inventory.setStoreId(inventoryDto.getStoreId());
+
+        Inventory savedRepository = inventoryRepository.save(inventory);
+
+        return savedRepository;
+    }
+
+    @Override
     public void deleteInventory() {
 
     }

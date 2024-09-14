@@ -39,4 +39,10 @@ public class InventoryController {
         return Response.success("Inventory created successfully", inventory);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateInventory(@Valid @PathVariable("id") Long id, @RequestBody InventoryDto inventoryDto) {
+        Inventory inventory = inventoryService.updateInventory(id, inventoryDto);
+        return Response.success("Inventory updated successfully", inventory);
+    }
+
 }
