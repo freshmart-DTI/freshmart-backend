@@ -48,8 +48,8 @@ public class Store {
     @Column(name = "longitude", nullable = false)
     private BigDecimal longitude;
 
-    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Inventory> inventories;
+//    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private List<Inventory> inventories;
 
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
