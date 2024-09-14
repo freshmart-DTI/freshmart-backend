@@ -2,12 +2,14 @@ package com.freshmart.backend.inventory.service.impl;
 
 import com.freshmart.backend.inventory.dto.InventoryDto;
 import com.freshmart.backend.inventory.entity.Inventory;
+import com.freshmart.backend.inventory.entity.InventoryJournal;
 import com.freshmart.backend.inventory.repository.InventoryRepository;
 import com.freshmart.backend.inventory.service.InventoryService;
 import com.freshmart.backend.product.entity.Product;
 import com.freshmart.backend.product.service.impl.ProductServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +39,7 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
+    @Transactional
     public Inventory createInventory(InventoryDto inventoryDto) {
         Inventory inventory = new Inventory();
 
@@ -44,6 +47,14 @@ public class InventoryServiceImpl implements InventoryService {
         inventory.setProduct(product);
         inventory.setQuantity(inventoryDto.getQuantity());
         inventory.setStoreId(inventoryDto.getStoreId());
+
+        InventoryJournal inventoryJournal = new InventoryJournal();
+        inventoryJournal.setQuantityChange(inventoryDto.getQuantity());
+        inventoryJournal.setInventory(inventory);
+
+        List<InventoryJournal> inventoryJournals = new ArrayList<>();
+        inventoryJournals.add(inventoryJournal);
+        inventory.setInventoryJournals(inventoryJournals);
 
         Inventory savedRepository = inventoryRepository.save(inventory);
 

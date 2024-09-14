@@ -1,5 +1,6 @@
 package com.freshmart.backend.inventory.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freshmart.backend.inventory.dto.InventoryDto;
 import com.freshmart.backend.product.entity.Product;
 import com.freshmart.backend.store.entity.Store;
@@ -8,6 +9,7 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
+import java.util.List;
 
 @Entity
 @Data
@@ -29,7 +31,12 @@ public class Inventory {
     @Column(updatable = false, nullable = false)
     private Instant createdAt;
 
+    @Column(name = "quantity", nullable = false)
     private Integer quantity;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<InventoryJournal> inventoryJournals;
 
     public InventoryDto toDto() {
         InventoryDto inventoryDto = new InventoryDto();
