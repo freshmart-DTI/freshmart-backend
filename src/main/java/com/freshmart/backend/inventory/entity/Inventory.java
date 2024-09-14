@@ -1,5 +1,6 @@
 package com.freshmart.backend.inventory.entity;
 
+import com.freshmart.backend.inventory.dto.InventoryDto;
 import com.freshmart.backend.product.entity.Product;
 import com.freshmart.backend.store.entity.Store;
 import jakarta.persistence.*;
@@ -21,13 +22,23 @@ public class Inventory {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @ManyToOne
-    @JoinColumn(name = "store_id", nullable = false)
-    private Store store;
+    @Column(name = "store_id", nullable = false)
+    private Long storeId;
 
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
     private Instant createdAt;
 
     private Integer quantity;
+
+    public InventoryDto toDto() {
+        InventoryDto inventoryDto = new InventoryDto();
+
+        inventoryDto.setId(id);
+        inventoryDto.setQuantity(quantity);
+        inventoryDto.setProductId(product.getId());
+        inventoryDto.setStoreId(storeId);
+
+        return inventoryDto;
+    }
 }
