@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/v1/api/users")
 public class UserController {
     private final UserService userService;
 
