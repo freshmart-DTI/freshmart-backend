@@ -7,7 +7,7 @@ import org.hibernate.annotations.ColumnDefault;
 import java.time.Instant;
 
 @Entity
-@Table(name = "users",schema = "developmentfp")
+@Table(name = "users")
 @Data
 public class User {
     @Id

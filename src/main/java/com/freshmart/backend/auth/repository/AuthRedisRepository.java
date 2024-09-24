@@ -9,12 +9,12 @@ import java.util.concurrent.TimeUnit;
 
 @Repository
 public class AuthRedisRepository {
-    private static final String STRING_KEY_PREFIX = "HiiMart:jwt:strings:" ;
-    private static final String STRING_BLACKLIST_KEY_PREFIX = "HiiMart:blacklist-jwt:strings:" ;
+    private static final String STRING_KEY_PREFIX = "Freshmart:jwt:strings:" ;
+    private static final String STRING_BLACKLIST_KEY_PREFIX = "Freshmart:blacklist-jwt:strings:" ;
 
-    private static final String STRING_LINK_VERIFICATION_KEY_PREFIX = "HiiMart:link:strings:";
+    private static final String STRING_LINK_VERIFICATION_KEY_PREFIX = "Freshmart:link:strings:";
 
-    private static final String STRING_LINK_RESET_PASSWORD_KEY_PREFIX = "HiiMart:reset-password:strings:";
+    private static final String STRING_LINK_RESET_PASSWORD_KEY_PREFIX = "Freshmart:reset-password:strings:";
     private final ValueOperations<String, String> valueOps  ;
 
     public AuthRedisRepository(RedisTemplate<String, String> redisTemplate) {
