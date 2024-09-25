@@ -2,8 +2,10 @@ package com.freshmart.backend.product.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshmart.backend.product.dto.ProductDto;
+import com.freshmart.backend.product.entity.Product;
 import com.freshmart.backend.product.service.ProductService;
 import com.freshmart.backend.product.service.impl.ProductServiceImpl;
+import com.freshmart.backend.response.PagedResponse;
 import com.freshmart.backend.response.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +28,18 @@ public class ProductController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> getAllProducts() {
-        List<ProductDto> productDtos = productService.getAllProducts();
-        return Response.success("List of products fetched", productDtos);
+    public ResponseEntity<?> getAllProducts(@RequestParam(required = false) String search,
+                                            @RequestParam(required = false) Double minPrice,
+                                            @RequestParam(required = false) Double maxPrice,
+                                            @RequestParam(required = false) String category,
+                                            @RequestParam(defaultValue = "0") int page,
+                                            @RequestParam(defaultValue = "10") int size,
+                                            @RequestParam(defaultValue = "id") String sortBy,
+                                            @RequestParam(defaultValue = "asc") String sortDir) {
+
+        PagedResponse<ProductDto> products = productService.getAllProducts(search, minPrice, maxPrice, category, page, size, sortBy, sortDir);
+
+        return Response.success("List of products fetched", products);
     }
 
     @GetMapping("/{productId}")
