@@ -1,5 +1,7 @@
 package com.freshmart.backend.product.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshmart.backend.product.dto.ProductDto;
 import com.freshmart.backend.product.entity.Product;
@@ -7,6 +9,7 @@ import com.freshmart.backend.product.service.ProductService;
 import com.freshmart.backend.product.service.impl.ProductServiceImpl;
 import com.freshmart.backend.response.PagedResponse;
 import com.freshmart.backend.response.Response;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,7 +17,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("api/v1/products")
@@ -55,6 +60,19 @@ public class ProductController {
         ProductDto newProduct = productService.createProduct(productDto, images);
 
         return Response.success(HttpStatus.CREATED.value(), "Product created successfully", newProduct);
+    }
+
+    @PutMapping("/{productId}")
+    public ResponseEntity<?> updateProduct(@PathVariable("productId") Long productId, @RequestPart("productDto") String productDtoJson, @RequestPart("newImages") List<MultipartFile> newImages, @RequestPart("imagesToRemove") String imagesToRemoveJson) throws Exception {
+
+        List<Long> imagesToRemove = imagesToRemoveJson != null
+                ? objectMapper.readValue(imagesToRemoveJson, new TypeReference<List<Long>>() {})
+                : null;
+
+        ProductDto productDto = objectMapper.readValue(productDtoJson, ProductDto.class);
+        ProductDto updatedProduct = productService.updateProduct(productId, productDto, newImages, imagesToRemove);
+
+        return Response.success("Product updated successfully", updatedProduct);
     }
 
     @DeleteMapping("/{productId}")
