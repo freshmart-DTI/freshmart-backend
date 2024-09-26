@@ -35,6 +35,12 @@ public class DiscountController {
         return Response.success("Product created successfully", createdDiscount);
     }
 
+    @PutMapping("/{discountId}")
+    public ResponseEntity<?> updateDiscount(@PathVariable("discountId") Long discountId, @Valid @RequestBody DiscountDto discountDto) {
+        DiscountDto updatedDiscount = discountService.updateDiscount(discountId, discountDto);
+        return Response.success("Product with id: " + discountId + " updated successfully", updatedDiscount);
+    }
+
     @DeleteMapping("/{discountId}")
     public ResponseEntity<?> deleteDiscount(@PathVariable("discountId") Long discountId) {
         discountService.deleteDiscount(discountId);

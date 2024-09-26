@@ -43,6 +43,20 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
+    public DiscountDto updateDiscount(Long discountId, DiscountDto discountDto) {
+        Discount existingDiscount = discountRepository.findById(discountId).orElseThrow(() -> new EntityNotFoundException("Discount not found with id: " + discountId));
+
+        existingDiscount.setAmount(discountDto.getAmount());
+        existingDiscount.setType(discountDto.getType());
+        existingDiscount.setMinPurchase(discountDto.getMinPurchase());
+        existingDiscount.setMaxDiscount(discountDto.getMaxDiscount());
+
+        Discount updatedDiscount = discountRepository.save(existingDiscount);
+
+        return updatedDiscount.toDto();
+    }
+
+    @Override
     public void deleteDiscount(Long discountId) {
         Discount discount = discountRepository.findById(discountId).orElseThrow(() -> new EntityNotFoundException("Discount not found with id: " + discountId));
 
