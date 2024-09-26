@@ -1,5 +1,6 @@
 package com.freshmart.backend.discount.entity;
 
+import com.freshmart.backend.discount.dto.DiscountDto;
 import com.freshmart.backend.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -43,4 +44,19 @@ public class Discount {
 
     @CreationTimestamp
     private Instant createdAt;
+
+    public DiscountDto toDto() {
+        DiscountDto discountDto = new DiscountDto();
+
+        discountDto.setId(id);
+        discountDto.setAmount(amount);
+        discountDto.setProductId(product.getId());
+        discountDto.setType(type);
+        discountDto.setMinPurchase(minPurchase);
+        discountDto.setMaxDiscount(maxDiscount);
+        discountDto.setStartDate(startDate);
+        discountDto.setEndDate(endDate);
+
+        return discountDto;
+    }
 }
