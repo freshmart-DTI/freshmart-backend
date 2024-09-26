@@ -34,4 +34,11 @@ public class DiscountController {
 
         return Response.success("Product created successfully", createdDiscount);
     }
+
+    @DeleteMapping("/{discountId}")
+    public ResponseEntity<?> deleteDiscount(@PathVariable("discountId") Long discountId) {
+        discountService.deleteDiscount(discountId);
+
+        return Response.success("Discount deleted successfully");
+    }
 }

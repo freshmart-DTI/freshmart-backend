@@ -7,4 +7,5 @@ import java.util.List;
 public interface DiscountService {
     List<DiscountDto> getAllDiscounts();
     DiscountDto createDiscount(DiscountDto discountDto);
+    void deleteDiscount(Long discountId);
 }

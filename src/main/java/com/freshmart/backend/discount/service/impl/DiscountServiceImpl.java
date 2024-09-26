@@ -6,6 +6,7 @@ import com.freshmart.backend.discount.repository.DiscountRepository;
 import com.freshmart.backend.discount.service.DiscountService;
 import com.freshmart.backend.product.entity.Product;
 import com.freshmart.backend.product.service.impl.ProductServiceImpl;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,5 +40,12 @@ public class DiscountServiceImpl implements DiscountService {
         Discount savedDiscount = discountRepository.save(discount);
 
         return savedDiscount.toDto();
+    }
+
+    @Override
+    public void deleteDiscount(Long discountId) {
+        Discount discount = discountRepository.findById(discountId).orElseThrow(() -> new EntityNotFoundException("Discount not found with id: " + discountId));
+
+        discountRepository.delete(discount);
     }
 }
