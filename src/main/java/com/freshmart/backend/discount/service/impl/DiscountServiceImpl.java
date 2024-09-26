@@ -9,6 +9,7 @@ import com.freshmart.backend.product.service.impl.ProductServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DiscountServiceImpl implements DiscountService {
@@ -22,7 +23,10 @@ public class DiscountServiceImpl implements DiscountService {
 
     @Override
     public List<DiscountDto> getAllDiscounts() {
-        return List.of();
+        return discountRepository.findAll()
+                .stream()
+                .map(Discount::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
