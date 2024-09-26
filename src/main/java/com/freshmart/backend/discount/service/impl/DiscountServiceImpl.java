@@ -31,6 +31,13 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
+    public DiscountDto getDiscountById(Long discountId) {
+        Discount discount = discountRepository.findById(discountId).orElseThrow(() -> new EntityNotFoundException("Discount not found with id: " + discountId));
+
+        return discount.toDto();
+    }
+
+    @Override
     public DiscountDto createDiscount(DiscountDto discountDto) {
         Discount discount = discountDto.toEntity();
 

@@ -28,6 +28,12 @@ public class DiscountController {
         return Response.success("List of discounts fetched", discounts);
     }
 
+    @GetMapping("/{discountId}")
+    public ResponseEntity<?> getDiscountById(@PathVariable Long discountId) {
+        DiscountDto discount = discountService.getDiscountById(discountId);
+        return Response.success("Discount with id: " + discountId + " fetched", discount);
+    }
+
     @PostMapping()
     public ResponseEntity<?> createDiscount(@Valid @RequestBody DiscountDto discountDto) {
         DiscountDto createdDiscount = discountService.createDiscount(discountDto);
