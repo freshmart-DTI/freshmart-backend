@@ -6,8 +6,13 @@ import com.freshmart.backend.order.entity.Order;
 import com.freshmart.backend.order.entity.OrderItem;
 import com.freshmart.backend.order.repository.OrderRepository;
 import com.freshmart.backend.order.service.OrderService;
+import com.freshmart.backend.product.dto.ProductDto;
 import com.freshmart.backend.product.entity.Product;
 import com.freshmart.backend.product.service.impl.ProductServiceImpl;
+import com.freshmart.backend.response.PagedResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,8 +30,23 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
+    public PagedResponse<OrderDto> getAllOrders(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+
+
+        Page<Order> orderPage = orderRepository.findAll(pageable);
+
+        List<OrderDto> orderDtos = orderPage.stream().map(Order::toDto).collect(Collectors.toList());
+
+        return new PagedResponse<>(
+                orderDtos,
+                orderPage.getNumber(),
+                orderPage.getSize(),
+                orderPage.getTotalElements(),
+                orderPage.getTotalPages(),
+                orderPage.isLast()
+        );
     }
 
     @Override
