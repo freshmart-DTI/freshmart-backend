@@ -1,5 +1,6 @@
 package com.freshmart.backend.order.entity;
 
+import com.freshmart.backend.order.dto.OrderItemDto;
 import com.freshmart.backend.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -31,4 +32,17 @@ public class OrderItem {
 
     @Column(nullable = false)
     private BigDecimal discountAmount;
+
+    public OrderItemDto toDto() {
+        OrderItemDto orderItemDto = new OrderItemDto();
+
+        orderItemDto.setId(id);
+        orderItemDto.setProductId(product.getId());
+        orderItemDto.setOrderId(order.getId());
+        orderItemDto.setQuantity(quantity);
+        orderItemDto.setPrice(price);
+        orderItemDto.setDiscountAmount(discountAmount);
+
+        return orderItemDto;
+    }
 }

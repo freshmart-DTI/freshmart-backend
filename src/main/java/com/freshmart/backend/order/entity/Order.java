@@ -1,5 +1,6 @@
 package com.freshmart.backend.order.entity;
 
+import com.freshmart.backend.order.dto.OrderDto;
 import com.freshmart.backend.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -62,4 +63,25 @@ public class Order {
     private Instant estimatedDeliveryDate;
 
     private Instant actualDeliveryDate;
+
+    public OrderDto toDto() {
+        OrderDto orderDto = new OrderDto();
+
+        orderDto.setId(id);
+        orderDto.setStatus(status);
+        orderDto.setTotalAmount(totalAmount);
+        orderDto.setDiscountAmount(discountAmount);
+        orderDto.setShippingCost(shippingCost);
+        orderDto.setFinalAmount(finalAmount);
+        orderDto.setShippingAddress(shippingAddress);
+        orderDto.setPaymentMethod(paymentMethod);
+        orderDto.setPaymentStatus(paymentStatus);
+        orderDto.setPaymentProof(paymentProof);
+        orderDto.setCreatedAt(createdAt);
+        orderDto.setUpdatedAt(updatedAt);
+        orderDto.setEstimatedDeliveryDate(estimatedDeliveryDate);
+        orderDto.setActualDeliveryDate(actualDeliveryDate);
+
+        return orderDto;
+    }
 }
