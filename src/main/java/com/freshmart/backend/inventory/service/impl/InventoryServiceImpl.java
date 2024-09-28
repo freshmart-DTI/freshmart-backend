@@ -7,6 +7,8 @@ import com.freshmart.backend.inventory.repository.InventoryRepository;
 import com.freshmart.backend.inventory.service.InventoryService;
 import com.freshmart.backend.product.entity.Product;
 import com.freshmart.backend.product.service.impl.ProductServiceImpl;
+import com.freshmart.backend.store.entity.Store;
+import com.freshmart.backend.store.service.impl.StoreServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,10 +21,12 @@ import java.util.stream.Collectors;
 public class InventoryServiceImpl implements InventoryService {
     private final InventoryRepository inventoryRepository;
     private final ProductServiceImpl productService;
+    private final StoreServiceImpl storeService;
 
-    public InventoryServiceImpl(InventoryRepository inventoryRepository, ProductServiceImpl productService) {
+    public InventoryServiceImpl(InventoryRepository inventoryRepository, ProductServiceImpl productService, StoreServiceImpl storeService) {
         this.inventoryRepository = inventoryRepository;
         this.productService = productService;
+        this.storeService = storeService;
     }
 
     @Override
@@ -46,7 +50,9 @@ public class InventoryServiceImpl implements InventoryService {
         Product product = productService.getProductById(inventoryDto.getProductId()).toEntity();
         inventory.setProduct(product);
         inventory.setQuantity(inventoryDto.getQuantity());
-        inventory.setStoreId(inventoryDto.getStoreId());
+
+        Store store = storeService.getStoreById(inventoryDto.getProductId());
+        inventory.setStore(store);
 
         InventoryJournal inventoryJournal = new InventoryJournal();
         inventoryJournal.setQuantityChange(inventoryDto.getQuantity());
@@ -68,6 +74,11 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
+    public Inventory getInventoryByStoreAndProduct(Store store, Product product) {
+        return inventoryRepository.findByStoreAndProduct(store, product).orElseThrow(() -> new EntityNotFoundException("Inventory not found"));
+    }
+
+    @Override
     public Inventory updateInventory(Long inventoryId, InventoryDto inventoryDto) {
         Inventory inventory = inventoryRepository.findById(inventoryId).orElseThrow(() -> new EntityNotFoundException("Inventory with id: " + inventoryId + " not found"));
 
@@ -76,7 +87,9 @@ public class InventoryServiceImpl implements InventoryService {
         Product product = productService.getProductById(inventoryDto.getProductId()).toEntity();
         inventory.setProduct(product);
         inventory.setQuantity(inventoryDto.getQuantity());
-        inventory.setStoreId(inventoryDto.getStoreId());
+
+        Store store = storeService.getStoreById(inventoryDto.getStoreId());
+        inventory.setStore(store);
 
         InventoryJournal inventoryJournal = new InventoryJournal();
         inventoryJournal.setQuantityChange(quantityChange);
