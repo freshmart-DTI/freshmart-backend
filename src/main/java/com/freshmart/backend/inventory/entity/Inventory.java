@@ -24,8 +24,9 @@ public class Inventory {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @Column(name = "store_id", nullable = false)
-    private Long storeId;
+    @ManyToOne
+    @JoinColumn(name = "store_id", nullable = false)
+    private Store store;
 
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
@@ -44,7 +45,7 @@ public class Inventory {
         inventoryDto.setId(id);
         inventoryDto.setQuantity(quantity);
         inventoryDto.setProductId(product.getId());
-        inventoryDto.setStoreId(storeId);
+        inventoryDto.setStoreId(store.getId());
 
         return inventoryDto;
     }

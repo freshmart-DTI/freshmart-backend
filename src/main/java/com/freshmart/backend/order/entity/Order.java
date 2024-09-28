@@ -64,6 +64,10 @@ public class Order {
 
     private Instant actualDeliveryDate;
 
+    @ManyToOne
+    @JoinColumn(name = "store_id", nullable = false)
+    private Store store;
+
     public OrderDto toDto() {
         OrderDto orderDto = new OrderDto();
 
