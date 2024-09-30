@@ -102,6 +102,19 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
+    public Inventory updateQuantity(Inventory inventory, int quantityChange) {
+        inventory.setQuantity(inventory.getQuantity() + quantityChange);
+
+        InventoryJournal journal = new InventoryJournal();
+        journal.setInventory(inventory);
+        journal.setQuantityChange(quantityChange);
+
+        inventory.getInventoryJournals().add(journal);
+
+        return inventoryRepository.save(inventory);
+    }
+
+    @Override
     public void deleteInventory() {
 
     }

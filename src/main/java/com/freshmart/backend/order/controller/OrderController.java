@@ -1,5 +1,6 @@
 package com.freshmart.backend.order.controller;
 
+import com.freshmart.backend.order.dto.OrderCreateDto;
 import com.freshmart.backend.order.dto.OrderDto;
 import com.freshmart.backend.order.entity.Order;
 import com.freshmart.backend.order.service.impl.OrderServiceImpl;
@@ -29,8 +30,26 @@ public class OrderController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> createOrder(@Valid @RequestBody OrderDto orderDto) {
-        OrderDto order = orderService.createOrder(orderDto);
+    public ResponseEntity<?> createOrder(@Valid @RequestBody OrderCreateDto orderCreateDto) {
+        OrderDto order = orderService.createOrder(orderCreateDto);
         return Response.success("Order created successfully", order);
+    }
+
+    @PutMapping("/{orderId}/cancel")
+    public ResponseEntity<?> cancelOrder(@PathVariable("orderId") Long orderId) {
+        OrderDto orderDto = orderService.cancelOrder(orderId);
+        return Response.success("Order with id: " + orderId + " canceled", orderDto);
+    }
+
+    @PutMapping("/{orderId}/confirm")
+    public ResponseEntity<?> confirmOrder(@PathVariable("orderId") Long orderId) {
+        OrderDto orderDto = orderService.confirmOrder(orderId);
+        return Response.success("Order with id: " + orderId + " confirmed", orderDto);
+    }
+
+    @PutMapping("/{orderId}/ship")
+    public ResponseEntity<?> shipOrder(@PathVariable("orderId") Long orderId) {
+        OrderDto orderDto = orderService.shipOrder(orderId);
+        return Response.success("Order with id: " + orderId + " confirmed");
     }
 }

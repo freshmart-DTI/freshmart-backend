@@ -13,5 +13,6 @@ public interface InventoryService {
     InventoryDto getInventoryById(Long id);
     Inventory getInventoryByStoreAndProduct(Store store, Product product);
     Inventory updateInventory(Long inventoryId, InventoryDto inventoryDto);
+    Inventory updateQuantity(Inventory inventory, int quantityChange);
     void deleteInventory();
 }
