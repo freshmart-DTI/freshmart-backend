@@ -34,9 +34,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(name = "warehouse_id")
-    private Integer warehouseId;
-
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
     private Instant createdAt;

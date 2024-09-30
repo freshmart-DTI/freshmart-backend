@@ -58,7 +58,7 @@ public class SecurityConfig {
                     auth.requestMatchers("/api/v1/discounts/**").permitAll();
                     auth.requestMatchers("/api/v1/orders/**").permitAll();
                     auth.requestMatchers("/api/v1/stores/**").permitAll();
-                    auth.requestMatchers("/api/auth/**").permitAll();
+                    auth.requestMatchers("/api/v1/auth/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .httpBasic(Customizer.withDefaults())
