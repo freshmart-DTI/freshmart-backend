@@ -1,6 +1,7 @@
 package com.freshmart.backend.store.entity;
 
 import com.freshmart.backend.inventory.entity.Inventory;
+import com.freshmart.backend.order.entity.Order;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -50,6 +51,9 @@ public class Store {
 
 //    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    private List<Inventory> inventories;
+
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Order> orders;
 
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
