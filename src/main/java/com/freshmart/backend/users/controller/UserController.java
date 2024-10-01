@@ -26,11 +26,6 @@ public class UserController {
         return Response.success("User registered successfully", userService.register(userRegisterRequestDto));
     }
 
-    @PostMapping("/register-google")
-    public ResponseEntity<Response<User>> registerSocial(@RequestBody UserRegisterSocialRequestDto userRegisterSocialRequestDto) {
-        return Response.success("User registered successfully", userService.registerSocial(userRegisterSocialRequestDto));
-    }
-
     @PostMapping("/reset-password")
     public ResponseEntity<Response<String>> resetPassword(@RequestParam String email){
         return Response.success("Reset password link status has been fetched successfully",userService.sendResetPasswordLink(email));
@@ -41,24 +36,24 @@ public class UserController {
         return Response.success("User has been verified", userService.setPassword(data));
     }
 
-    @PostMapping("/new-verification-link")
+    @PostMapping("/change-email")
     public ResponseEntity<Response<Object>> sendNewVerificationLink(@RequestParam String email){
         userService.newVerificationLink(email);
         return Response.success("Verification link has been sent");
     }
 
-    @PostMapping("/new-reset-password-link")
+    @PostMapping("/send-reset-password-link")
     public ResponseEntity<Response<Object>> sendNewResetPasswordLink(@RequestParam String email){
         userService.newResetPasswordLink(email);
         return Response.success("Reset password link has been sent");
     }
 
-    @PostMapping("/check-verification")
-    public ResponseEntity<Response<String>> isVerifiedLinkValid(@RequestBody CheckVerificationLinkDto data){
-        return Response.success("Verification link status has been fetched", userService.checkVerificationLink(data));
+    @PostMapping("/verify-email")
+    public ResponseEntity<Response<String>> isVerifiedLinkValid(@RequestBody VerifyEmailDto data){
+        return Response.success("Verification link status has been fetched", userService.verifyEmail(data));
     }
 
-    @PostMapping("/check-reset-password")
+    @PostMapping("/verify-password-reset")
     public ResponseEntity<Response<Boolean>> isResetPasswordLinkValid(@RequestBody CheckResetPasswordLinkDto data){
         return Response.success("Verification link status has been fetched", userService.checkResetPasswordLinkIsValid(data));
     }

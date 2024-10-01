@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Optional;
@@ -126,7 +127,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User newUser = user.toEntity();
-        newUser.setIsVerified(true);
+        newUser.setVerifiedAt(Instant.now());
         userRepository.save(newUser);
         return newUser;
     }
@@ -137,8 +138,8 @@ public class UserServiceImpl implements UserService {
         if(!data.getConfirmPassword().equals(data.getPassword())){
             throw new InputMismatchException("Password doesn't match");
         }
-        if(!user.getIsVerified()){
-            user.setIsVerified(true);
+        if(user.getVerifiedAt() == null){
+            user.setVerifiedAt(Instant.now());
         }
         user.setUpdatedAt(Instant.now());
         user.setPassword(passwordEncoder.encode(data.getPassword()));
@@ -147,16 +148,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String checkVerificationLink(CheckVerificationLinkDto data) {
-        Optional<User> user = userRepository.findByEmail(data.getEmail());
-        var existingToken = authRedisRepository.getVerificationLink(data.getEmail());
-        if(user.get().getIsVerified()){
-            return "Verified";
+    public String verifyEmail(VerifyEmailDto data) {
+        Optional<User> userOpt = userRepository.findByEmail(data.getEmail());
+
+        if (userOpt.isEmpty()) {
+            return "User not found";
         }
-        if(!user.get().getIsVerified() && authRedisRepository.isVerificationLinkValid(data.getEmail()) && existingToken.equals(data.getToken())){
-            return "Not Verified";
+
+        User user = userOpt.get();
+
+        if (user.getVerifiedAt() != null) {
+            return "Already verified";
         }
-        return "Expired";
+
+        String existingToken = authRedisRepository.getVerificationLink(data.getEmail());
+        boolean isTokenValid = authRedisRepository.isVerificationLinkValid(data.getEmail());
+
+        if (existingToken != null && isTokenValid && existingToken.equals(data.getToken())) {
+            user.setVerifiedAt(Instant.now());
+            userRepository.save(user);
+            authRedisRepository.deleteVerificationLink(data.getEmail());
+            return "Email verified successfully";
+        }
+
+        return "Invalid or expired token";
     }
 
     @Override
@@ -226,10 +241,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public String sendResetPasswordLink(String email) {
         Optional<User> userData = userRepository.findByEmail(email);
-        if(!userData.get().getIsVerified()){
+        if(userData.get().getVerifiedAt() == null){
             return "Not Verified";
         }
-        if(userData.isEmpty() || userData.get().getPassword() == null){
+        if(userData.get().getPassword() == null){
             return "Not Registered";
         }
         if (authRedisRepository.isResetPasswordLinkValid(email)) {
@@ -267,7 +282,7 @@ public class UserServiceImpl implements UserService {
     public Boolean checkResetPasswordLinkIsValid(CheckResetPasswordLinkDto data) {
         Optional<User> user = userRepository.findByEmail(data.getEmail());
         var existingToken = authRedisRepository.getResetPasswordLink(data.getEmail());
-        return user.get().getIsVerified() && authRedisRepository.isResetPasswordLinkValid(data.getEmail()) && existingToken.equals(data.getToken());
+        return user.get().getVerifiedAt() != null && authRedisRepository.isResetPasswordLinkValid(data.getEmail()) && existingToken.equals(data.getToken());
     }
 
     private UserDto convertToDTO(User user) {

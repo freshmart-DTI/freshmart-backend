@@ -53,7 +53,7 @@ public class AuthController {
             }
 
             User user = userOptional.get();
-            if (!user.getIsVerified()) {
+            if (user.getVerifiedAt() == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Email Not Verified", "message", "Your email address has not been verified"));
             }
 
@@ -90,7 +90,7 @@ public class AuthController {
             }
 
             User user = userOptional.get();
-            if (!user.getIsVerified()) {
+            if (user.getVerifiedAt() == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Email Not Verified", "message", "Your email address has not been verified"));
             }
             log.info("Token requested for user :" + userOptional.get().getName() + " with roles: " + userOptional.get().getRole());

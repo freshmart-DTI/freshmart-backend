@@ -28,8 +28,8 @@ public class User {
     @Column(name = "profile_picture")
     private String profilePicture;
 
-    @Column(name = "is_verified")
-    private Boolean isVerified = false;
+    @Column(name = "verified_at")
+    private Instant verifiedAt;
 
     @Enumerated(EnumType.STRING)
     private Role role;

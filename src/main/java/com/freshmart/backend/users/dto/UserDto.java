@@ -13,7 +13,6 @@ public class UserDto {
     private String profilePicture;
     private Boolean isVerified;
     private Role role;
-    private Integer warehouseId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
