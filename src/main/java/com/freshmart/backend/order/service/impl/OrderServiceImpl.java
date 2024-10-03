@@ -118,7 +118,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto cancelOrder(Long orderId) {
+        User user = userService.getCurrentUser();
+
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Order not found with id: " + orderId));
+
+        if(!user.equals(order.getUser())) {
+            throw new IllegalArgumentException("User is not authorized to cancel this order");
+        }
 
         if (order.getStatus() == OrderStatus.SHIPPED || order.getStatus() == OrderStatus.CONFIRMED) {
             throw new IllegalStateException("Cannot cancel order that has been shipped or delivered");
@@ -146,6 +152,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto confirmOrder(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Order not found with id: " + orderId));
+
+        User user = userService.getCurrentUser();
+
+        if(!user.equals(order.getUser())) {
+            throw new IllegalArgumentException("User is not authorized to confirm this order");
+        }
 
         order.setStatus(OrderStatus.PROCESSING);
 
