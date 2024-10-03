@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface UserService {
     List<UserDto> getAllUsers();
     Optional<UserDto> getUserById(Long id);
-    Optional<UserDto> getUserByEmail(String email);
+    User getUserByEmail(String email);
     UserDto createUser(UserDto userDTO);
     Optional<UserDto> updateUser(Long id, UserDto userDTO);
     void deleteUser(Long id);
@@ -29,4 +29,6 @@ public interface UserService {
 
     String sendResetPasswordLink(String email);
     Boolean checkResetPasswordLinkIsValid(CheckResetPasswordLinkDto data);
+
+    User getCurrentUser();
 }

@@ -6,6 +6,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import jakarta.servlet.http.Cookie;
 import lombok.extern.java.Log;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,8 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
@@ -56,10 +59,26 @@ public class SecurityConfig {
                     auth.requestMatchers("/api/v1/categories/**").permitAll();
                     auth.requestMatchers("/api/v1/inventories/**").permitAll();
                     auth.requestMatchers("/api/v1/discounts/**").permitAll();
-                    auth.requestMatchers("/api/v1/orders/**").permitAll();
                     auth.requestMatchers("/api/v1/stores/**").permitAll();
                     auth.requestMatchers("/api/v1/auth/**").permitAll();
                     auth.anyRequest().authenticated();
+                })
+                .oauth2ResourceServer((oauth2) -> {
+                    oauth2.jwt((jwt) -> jwt
+                            .decoder(jwtDecoder())
+                            .jwtAuthenticationConverter(jwtAuthenticationConverter())
+                    );
+                    oauth2.bearerTokenResolver((request) -> {
+                        Cookie[] cookies = request.getCookies();
+                        if(cookies != null) {
+                            for (Cookie cookie : cookies) {
+                                if("Sid".equals(cookie.getName())) {
+                                    return cookie.getValue();
+                                }
+                            }
+                        }
+                        return null;
+                    });
                 })
                 .httpBasic(Customizer.withDefaults())
                 .build();
@@ -75,5 +94,16 @@ public class SecurityConfig {
         JWK jwk = new RSAKey.Builder(rsaKeys.publicKey()).privateKey(rsaKeys.privateKey()).build();
         JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(jwks);
+    }
+
+    private JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        grantedAuthoritiesConverter.setAuthoritiesClaimName("scope");
+        grantedAuthoritiesConverter.setAuthorityPrefix("SCOPE_");
+
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
+
+        return jwtAuthenticationConverter;
     }
 }

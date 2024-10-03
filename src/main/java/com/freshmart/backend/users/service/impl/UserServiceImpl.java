@@ -8,9 +8,12 @@ import com.freshmart.backend.users.entity.User;
 import com.freshmart.backend.users.repository.UserRepository;
 import com.freshmart.backend.users.service.UserService;
 import com.freshmart.backend.exception.DataNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.java.Log;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -52,8 +55,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserDto> getUserByEmail(String email) {
-        return Optional.empty();
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("User not found"));
     }
 
 
@@ -283,6 +286,14 @@ public class UserServiceImpl implements UserService {
         Optional<User> user = userRepository.findByEmail(data.getEmail());
         var existingToken = authRedisRepository.getResetPasswordLink(data.getEmail());
         return user.get().getVerifiedAt() != null && authRedisRepository.isResetPasswordLinkValid(data.getEmail()) && existingToken.equals(data.getToken());
+    }
+
+    @Override
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        return userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("User not found"));
     }
 
     private UserDto convertToDTO(User user) {

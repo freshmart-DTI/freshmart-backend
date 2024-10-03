@@ -18,6 +18,8 @@ import com.freshmart.backend.product.service.impl.ProductServiceImpl;
 import com.freshmart.backend.response.PagedResponse;
 import com.freshmart.backend.store.entity.Store;
 import com.freshmart.backend.store.service.impl.StoreServiceImpl;
+import com.freshmart.backend.users.entity.User;
+import com.freshmart.backend.users.service.impl.UserServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,12 +38,14 @@ public class OrderServiceImpl implements OrderService {
     private final ProductServiceImpl productService;
     private final InventoryServiceImpl inventoryService;
     private final StoreServiceImpl storeService;
+    private final UserServiceImpl userService;
 
-    public OrderServiceImpl(OrderRepository orderRepository, ProductServiceImpl productService, InventoryServiceImpl inventoryService, StoreServiceImpl storeService) {
+    public OrderServiceImpl(OrderRepository orderRepository, ProductServiceImpl productService, InventoryServiceImpl inventoryService, StoreServiceImpl storeService, UserServiceImpl userService) {
         this.orderRepository = orderRepository;
         this.productService = productService;
         this.inventoryService = inventoryService;
         this.storeService = storeService;
+        this.userService = userService;
     }
 
     @Override
@@ -68,6 +72,9 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderDto createOrder(OrderCreateDto orderDto) {
         Order order = orderDto.toEntity();
+
+        User user = userService.getCurrentUser();
+        order.setUser(user);
 
         order.setStatus(OrderStatus.AWAITING_PAYMENT);
         order.setPaymentStatus(PaymentStatus.PENDING);
