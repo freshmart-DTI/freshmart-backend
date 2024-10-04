@@ -64,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
                         return imageDto;
                     }).collect(Collectors.toList());
 
-                    productDto.setProductImages(imageDtos);
+                    productDto.setImages(imageDtos);
 
                     return productDto;
                 })
