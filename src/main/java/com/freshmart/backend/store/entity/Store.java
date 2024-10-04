@@ -51,8 +51,12 @@ public class Store {
     @Column(name = "longitude", nullable = false)
     private BigDecimal longitude;
 
-//    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<Inventory> inventories;
+    @NotNull
+    @Column(name = "is_main", nullable = false)
+    private Boolean isMain;
+
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Inventory> inventories;
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Order> orders;
