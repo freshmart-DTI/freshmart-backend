@@ -14,6 +14,9 @@ import java.util.List;
 public class OrderDto {
     private Long id;
 
+    @NotNull(message = "User id is required")
+    private Long userId;
+
     @NotEmpty(message = "Order items must not be empty")
     @Valid
     private List<OrderItemDto> orderItems;

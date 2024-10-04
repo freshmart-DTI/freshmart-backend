@@ -1,10 +1,12 @@
 package com.freshmart.backend.users.entity;
 
 
+import com.freshmart.backend.order.entity.Order;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
 import java.time.Instant;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -33,6 +35,9 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")

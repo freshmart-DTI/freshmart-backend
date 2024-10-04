@@ -13,7 +13,7 @@ public class ProductDto {
     private String name;
     private BigDecimal price;
     private String description;
-    private List<ProductImageDto> productImages;
+    private List<ProductImageDto> images;
     private Long categoryId;
 
     public Product toEntity() {

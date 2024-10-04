@@ -80,7 +80,7 @@ public class Product {
         List<ProductImageDto> productImageDtos = productImages.stream().map(ProductImage::toDto)
                 .collect(Collectors.toList());
 
-        productDto.setProductImages(productImageDtos);
+        productDto.setImages(productImageDtos);
 
         return productDto;
     }

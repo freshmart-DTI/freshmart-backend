@@ -40,4 +40,9 @@ public class ImageUploadServiceImpl implements ImageUploadService {
         }
     }
 
+    @Override
+    public String generateUrl(String publicId) {
+        return cloudinary.url().format("png").secure(true).generate(publicId);
+    }
+
 }

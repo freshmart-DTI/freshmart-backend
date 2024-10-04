@@ -1,6 +1,7 @@
 package com.freshmart.backend.product.service.impl;
 
 import com.freshmart.backend.product.dto.ProductDto;
+import com.freshmart.backend.product.dto.ProductImageDto;
 import com.freshmart.backend.product.entity.Category;
 import com.freshmart.backend.product.entity.Product;
 import com.freshmart.backend.product.entity.ProductImage;
@@ -41,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public PagedResponse<ProductDto> getAllProducts(String search, Double minPrice, Double maxPrice, String category, int page, int size, String sortBy, String sortDir) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortBy);
-        Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
+        Pageable pageable = PageRequest.of(page, size, sort);
 
         Specification<Product> spec = Specification.where(ProductSpecification.withSearch(search))
                 .and(ProductSpecification.withMinPrice(minPrice))
@@ -51,7 +52,22 @@ public class ProductServiceImpl implements ProductService {
         Page<Product> productPage = productRepository.findAll(spec, pageable);
 
         List<ProductDto> productDtos = productPage.getContent().stream()
-                .map(Product::toDto)
+                .map(product -> {
+                    ProductDto productDto = product.toDto();
+
+                    List<ProductImageDto> imageDtos = product.getProductImages().stream().map(productImage -> {
+                        ProductImageDto imageDto = productImage.toDto();
+
+                        String imageUrl = imageUploadService.generateUrl(productImage.getUrl());
+                        imageDto.setUrl(imageUrl);
+
+                        return imageDto;
+                    }).collect(Collectors.toList());
+
+                    productDto.setImages(imageDtos);
+
+                    return productDto;
+                })
                 .collect(Collectors.toList());
 
         return new PagedResponse<>(

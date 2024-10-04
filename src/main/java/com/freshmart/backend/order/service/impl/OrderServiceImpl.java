@@ -18,6 +18,8 @@ import com.freshmart.backend.product.service.impl.ProductServiceImpl;
 import com.freshmart.backend.response.PagedResponse;
 import com.freshmart.backend.store.entity.Store;
 import com.freshmart.backend.store.service.impl.StoreServiceImpl;
+import com.freshmart.backend.users.entity.User;
+import com.freshmart.backend.users.service.impl.UserServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,12 +38,14 @@ public class OrderServiceImpl implements OrderService {
     private final ProductServiceImpl productService;
     private final InventoryServiceImpl inventoryService;
     private final StoreServiceImpl storeService;
+    private final UserServiceImpl userService;
 
-    public OrderServiceImpl(OrderRepository orderRepository, ProductServiceImpl productService, InventoryServiceImpl inventoryService, StoreServiceImpl storeService) {
+    public OrderServiceImpl(OrderRepository orderRepository, ProductServiceImpl productService, InventoryServiceImpl inventoryService, StoreServiceImpl storeService, UserServiceImpl userService) {
         this.orderRepository = orderRepository;
         this.productService = productService;
         this.inventoryService = inventoryService;
         this.storeService = storeService;
+        this.userService = userService;
     }
 
     @Override
@@ -68,6 +72,9 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderDto createOrder(OrderCreateDto orderDto) {
         Order order = orderDto.toEntity();
+
+        User user = userService.getCurrentUser();
+        order.setUser(user);
 
         order.setStatus(OrderStatus.AWAITING_PAYMENT);
         order.setPaymentStatus(PaymentStatus.PENDING);
@@ -111,7 +118,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto cancelOrder(Long orderId) {
+        User user = userService.getCurrentUser();
+
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Order not found with id: " + orderId));
+
+        if(!user.equals(order.getUser())) {
+            throw new IllegalArgumentException("User is not authorized to cancel this order");
+        }
 
         if (order.getStatus() == OrderStatus.SHIPPED || order.getStatus() == OrderStatus.CONFIRMED) {
             throw new IllegalStateException("Cannot cancel order that has been shipped or delivered");
@@ -139,6 +152,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto confirmOrder(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Order not found with id: " + orderId));
+
+        User user = userService.getCurrentUser();
+
+        if(!user.equals(order.getUser())) {
+            throw new IllegalArgumentException("User is not authorized to confirm this order");
+        }
 
         order.setStatus(OrderStatus.PROCESSING);
 

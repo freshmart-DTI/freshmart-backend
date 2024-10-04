@@ -2,6 +2,7 @@ package com.freshmart.backend.order.entity;
 
 import com.freshmart.backend.order.dto.OrderDto;
 import com.freshmart.backend.store.entity.Store;
+import com.freshmart.backend.users.entity.User;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -19,6 +20,10 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_id_gen")
     @SequenceGenerator(name = "order_id_gen", sequenceName = "order_id_seq", allocationSize = 1)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
@@ -72,6 +77,7 @@ public class Order {
         OrderDto orderDto = new OrderDto();
 
         orderDto.setId(id);
+        orderDto.setUserId(user.getId());
         orderDto.setStatus(status);
         orderDto.setTotalAmount(totalAmount);
         orderDto.setDiscountAmount(discountAmount);
