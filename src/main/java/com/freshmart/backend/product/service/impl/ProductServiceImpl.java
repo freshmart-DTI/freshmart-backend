@@ -55,7 +55,7 @@ public class ProductServiceImpl implements ProductService {
                 .map(product -> {
                     ProductDto productDto = product.toDto();
 
-                    List<ProductImageDto> imageDtos = product.getProductImages().stream().map(productImage -> {
+                    List<ProductImageDto> imageDtos = product.getImages().stream().map(productImage -> {
                         ProductImageDto imageDto = productImage.toDto();
 
                         String imageUrl = imageUploadService.generateUrl(productImage.getUrl());
@@ -78,6 +78,13 @@ public class ProductServiceImpl implements ProductService {
                 productPage.getTotalPages(),
                 productPage.isLast()
         );
+    }
+
+    @Override
+    public List<ProductDto> getAllProducts() {
+        List<Product> products = productRepository.findAll();
+
+        return products.stream().map(Product::toDto).collect(Collectors.toList());
     }
 
     @Override
@@ -106,7 +113,7 @@ public class ProductServiceImpl implements ProductService {
             productImages.add(productImage);
         }
 
-        product.setProductImages(productImages);
+        product.setImages(productImages);
 
         Product savedProduct = productRepository.save(product);
 
@@ -131,7 +138,7 @@ public class ProductServiceImpl implements ProductService {
 
         remainingImages.addAll(newProductImages);
 
-        existingProduct.setProductImages(remainingImages);
+        existingProduct.setImages(remainingImages);
 
         Product updatedProduct = productRepository.save(existingProduct);
 

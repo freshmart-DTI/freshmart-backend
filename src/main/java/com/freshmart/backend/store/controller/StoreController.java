@@ -2,6 +2,7 @@ package com.freshmart.backend.store.controller;
 
 import com.freshmart.backend.response.Response;
 import com.freshmart.backend.store.dto.StoreDto;
+import com.freshmart.backend.store.dto.StoreWithProductsDto;
 import com.freshmart.backend.store.entity.Store;
 import com.freshmart.backend.store.service.impl.StoreServiceImpl;
 import jakarta.validation.Valid;
@@ -29,6 +30,13 @@ public class StoreController {
     @GetMapping("/nearest")
     public ResponseEntity<?> getNearestStore(@RequestParam(name = "lat", required = false) Double latitude, @RequestParam(name = "lon", required = false) Double longitude) {
         Store store = storeService.findNearestStore(latitude, longitude);
+
+        return Response.success("Nearest store fetched", store);
+    }
+
+    @GetMapping("/nearest/products")
+    public ResponseEntity<?> getProductsFromNearestStore(@RequestParam(name = "lat", required = false) Double latitude, @RequestParam(name = "lon", required = false) Double longitude) {
+        StoreWithProductsDto store = storeService.getProductsFromNearestStore(latitude, longitude);
 
         return Response.success("Nearest store fetched", store);
     }

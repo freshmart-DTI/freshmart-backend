@@ -10,11 +10,13 @@ import com.freshmart.backend.product.service.impl.ProductServiceImpl;
 import com.freshmart.backend.store.entity.Store;
 import com.freshmart.backend.store.service.impl.StoreServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,7 +25,7 @@ public class InventoryServiceImpl implements InventoryService {
     private final ProductServiceImpl productService;
     private final StoreServiceImpl storeService;
 
-    public InventoryServiceImpl(InventoryRepository inventoryRepository, ProductServiceImpl productService, StoreServiceImpl storeService) {
+    public InventoryServiceImpl(InventoryRepository inventoryRepository, ProductServiceImpl productService, @Lazy StoreServiceImpl storeService) {
         this.inventoryRepository = inventoryRepository;
         this.productService = productService;
         this.storeService = storeService;
@@ -117,5 +119,12 @@ public class InventoryServiceImpl implements InventoryService {
     @Override
     public void deleteInventory() {
 
+    }
+
+    @Override
+    public Map<Long, Integer> getStockByStore(Store store) {
+        List<Inventory> inventories = inventoryRepository.findByStore(store);
+        return inventories.stream()
+                .collect(Collectors.toMap(inventory -> inventory.getProduct().getId(), Inventory::getQuantity));
     }
 }

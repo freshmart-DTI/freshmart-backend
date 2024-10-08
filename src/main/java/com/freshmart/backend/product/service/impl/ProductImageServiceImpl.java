@@ -25,9 +25,9 @@ public class ProductImageServiceImpl implements ProductImageService {
     @Override
     @Transactional
     public List<ProductImage> removeOldImages(Product existingProduct, List<Long> imagesToRemove) throws IOException {
-        List<ProductImage> remainingImages = new ArrayList<>(existingProduct.getProductImages());
+        List<ProductImage> remainingImages = new ArrayList<>(existingProduct.getImages());
         if (imagesToRemove != null && !imagesToRemove.isEmpty()) {
-            for (ProductImage image : existingProduct.getProductImages()) {
+            for (ProductImage image : existingProduct.getImages()) {
                 if (imagesToRemove.contains(image.getId())) {
                     imageUploadService.deleteImage(image.getUrl());
                     productImageRepository.delete(image);
