@@ -47,7 +47,7 @@ public class Product {
     private Category category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ProductImage> productImages;
+    private List<ProductImage> images;
 
     @JsonIgnore
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -77,7 +77,7 @@ public class Product {
         productDto.setDescription(description);
         productDto.setCategoryId(category.getId());
 
-        List<ProductImageDto> productImageDtos = productImages.stream().map(ProductImage::toDto)
+        List<ProductImageDto> productImageDtos = images.stream().map(ProductImage::toDto)
                 .collect(Collectors.toList());
 
         productDto.setImages(productImageDtos);
