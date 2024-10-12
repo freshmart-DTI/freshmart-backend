@@ -7,10 +7,7 @@ import com.freshmart.backend.store.service.impl.StoreServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/stores")
@@ -27,5 +24,12 @@ public class StoreController {
         Store store = storeService.createStore(storeDto);
 
         return Response.success("Store created successfully", store);
+    }
+
+    @GetMapping("/nearest")
+    public ResponseEntity<?> getNearestStore(@RequestParam(name = "lat", required = false) Double latitude, @RequestParam(name = "lon", required = false) Double longitude) {
+        Store store = storeService.findNearestStore(latitude, longitude);
+
+        return Response.success("Nearest store fetched", store);
     }
 }

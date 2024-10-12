@@ -37,6 +37,9 @@ public class StoreDto {
     @DecimalMax(value = "180.0", message = "Longitude must be less than or equal to 180.0")
     private BigDecimal longitude;
 
+    @NotNull(message = "Is Main is required")
+    private Boolean isMain;
+
     public Store toEntity() {
         Store store = new Store();
 
@@ -46,6 +49,7 @@ public class StoreDto {
         store.setDistrict(district);
         store.setLatitude(latitude);
         store.setLongitude(longitude);
+        store.setIsMain(isMain);
 
         return store;
     }
