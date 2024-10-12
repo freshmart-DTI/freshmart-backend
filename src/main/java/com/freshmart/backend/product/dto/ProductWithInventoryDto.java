@@ -1,6 +1,5 @@
 package com.freshmart.backend.product.dto;
 
-import com.freshmart.backend.product.entity.Product;
 import lombok.Data;
 
 import java.math.BigDecimal;

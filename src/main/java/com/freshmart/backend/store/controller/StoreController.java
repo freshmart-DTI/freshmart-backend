@@ -35,9 +35,20 @@ public class StoreController {
     }
 
     @GetMapping("/nearest/products")
-    public ResponseEntity<?> getProductsFromNearestStore(@RequestParam(name = "lat", required = false) Double latitude, @RequestParam(name = "lon", required = false) Double longitude) {
-        StoreWithProductsDto store = storeService.getProductsFromNearestStore(latitude, longitude);
+    public ResponseEntity<?> getProductsFromNearestStore(@RequestParam(required = false) Double latitude,
+                                                         @RequestParam(required = false) Double longitude,
+                                                         @RequestParam(required = false) String search,
+                                                         @RequestParam(required = false) String category,
+                                                         @RequestParam(required = false) Double minPrice,
+                                                         @RequestParam(required = false) Double maxPrice,
+                                                         @RequestParam(required = false, defaultValue = "name") String sortBy,
+                                                         @RequestParam(required = false, defaultValue = "true") Boolean sortAsc,
+                                                         @RequestParam(required = false, defaultValue = "0") int page,
+    @RequestParam(required = false, defaultValue = "10") int size
+    ) {
+        StoreWithProductsDto storeWithProducts = storeService.getProductsFromNearestStore(
+                latitude, longitude, search, category, minPrice, maxPrice, sortBy, sortAsc, page, size);
 
-        return Response.success("Nearest store fetched", store);
+        return Response.success("Nearest store fetched", storeWithProducts);
     }
 }

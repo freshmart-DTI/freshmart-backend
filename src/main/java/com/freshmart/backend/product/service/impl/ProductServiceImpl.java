@@ -81,10 +81,33 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> getAllProducts() {
-        List<Product> products = productRepository.findAll();
+    public PagedResponse<Product> getFilteredProducts(String search, String category, Double minPrice, Double maxPrice,
+                                           String sortBy, Boolean sortAsc, int page, int size) {
 
-        return products.stream().map(Product::toDto).collect(Collectors.toList());
+        Specification<Product> spec = Specification.where(ProductSpecification.withSearch(search))
+                .and(ProductSpecification.withCategory(category))
+                .and(ProductSpecification.withMinPrice(minPrice))
+                .and(ProductSpecification.withMaxPrice(maxPrice));
+
+        Sort sort = Sort.by(Sort.Direction.ASC, "name");
+        if ("price".equals(sortBy)) {
+            sort = sortAsc != null && sortAsc ? Sort.by(Sort.Direction.ASC, "price") : Sort.by(Sort.Direction.DESC, "price");
+        } else if ("name".equals(sortBy)) {
+            sort = sortAsc != null && sortAsc ? Sort.by(Sort.Direction.ASC, "name") : Sort.by(Sort.Direction.DESC, "name");
+        }
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Product> productPage = productRepository.findAll(spec, pageable);
+
+        return new PagedResponse<>(
+                productPage.getContent(),
+                productPage.getNumber(),
+                productPage.getSize(),
+                productPage.getTotalElements(),
+                productPage.getTotalPages(),
+                productPage.isLast()
+        );
     }
 
     @Override

@@ -12,5 +12,6 @@ public interface StoreService {
     Store createStore(StoreDto storeDto);
     Store getStoreById(Long storeId);
     Store findNearestStore(Double longitude, Double latitude);
-    StoreWithProductsDto getProductsFromNearestStore(Double latitude, Double longitude);
+    StoreWithProductsDto getProductsFromNearestStore(Double latitude, Double longitude,
+                                                     String search, String category, Double minPrice, Double maxPrice, String sortBy, Boolean sortAsc, int page, int size);
 }
