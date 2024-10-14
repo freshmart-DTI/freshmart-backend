@@ -40,7 +40,9 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public List<Store> getAllStores() {
-        return List.of();
+        List<Store> stores = storeRepository.findAll();
+
+        return stores;
     }
 
     @Override
