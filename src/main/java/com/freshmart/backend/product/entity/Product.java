@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freshmart.backend.discount.entity.Discount;
 import com.freshmart.backend.discount.entity.Voucher;
 import com.freshmart.backend.inventory.entity.Inventory;
+import com.freshmart.backend.order.entity.OrderItem;
 import com.freshmart.backend.product.dto.ProductDto;
 import com.freshmart.backend.product.dto.ProductImageDto;
 import jakarta.persistence.*;
@@ -46,7 +47,7 @@ public class Product {
     private Category category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ProductImage> productImages;
+    private List<ProductImage> images;
 
     @JsonIgnore
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -60,6 +61,10 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Voucher> vouchers;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<OrderItem> orderItems;
+
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
     private Instant createdAt;
@@ -72,10 +77,10 @@ public class Product {
         productDto.setDescription(description);
         productDto.setCategoryId(category.getId());
 
-        List<ProductImageDto> productImageDtos = productImages.stream().map(ProductImage::toDto)
+        List<ProductImageDto> productImageDtos = images.stream().map(ProductImage::toDto)
                 .collect(Collectors.toList());
 
-        productDto.setProductImages(productImageDtos);
+        productDto.setImages(productImageDtos);
 
         return productDto;
     }
