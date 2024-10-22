@@ -4,6 +4,7 @@ package com.freshmart.backend.users.service.impl;
 import com.freshmart.backend.auth.repository.AuthRedisRepository;
 import com.freshmart.backend.email.service.EmailService;
 import com.freshmart.backend.users.dto.*;
+import com.freshmart.backend.users.entity.Role;
 import com.freshmart.backend.users.entity.User;
 import com.freshmart.backend.users.repository.UserRepository;
 import com.freshmart.backend.users.service.UserService;
@@ -16,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -92,6 +94,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User newUser = user.toEntity();
+        newUser.setRole(Role.USER);
         userRepository.save(newUser);
         String tokenValue = UUID.randomUUID().toString();
         authRedisRepository.saveVerificationLink(user.getEmail(),tokenValue);
@@ -151,31 +154,46 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String verifyEmail(VerifyEmailDto data) {
+    public boolean verifyEmail(VerifyEmailDto data) {
         Optional<User> userOpt = userRepository.findByEmail(data.getEmail());
 
+        // Check if the user exists
         if (userOpt.isEmpty()) {
-            return "User not found";
+            throw new IllegalArgumentException("User not found");
         }
 
         User user = userOpt.get();
 
+        // If the user has already been verified
         if (user.getVerifiedAt() != null) {
-            return "Already verified";
+            throw new IllegalArgumentException("Email already verified");
         }
 
+        // Check if a valid token exists for the user's email
         String existingToken = authRedisRepository.getVerificationLink(data.getEmail());
         boolean isTokenValid = authRedisRepository.isVerificationLinkValid(data.getEmail());
 
+        // If a valid token is found and matches the provided one
         if (existingToken != null && isTokenValid && existingToken.equals(data.getToken())) {
+            // Mark the user as verified
             user.setVerifiedAt(Instant.now());
             userRepository.save(user);
+
+            // Remove the token from Redis after successful verification
             authRedisRepository.deleteVerificationLink(data.getEmail());
-            return "Email verified successfully";
+
+            return true;  // Successful verification
         }
 
-        return "Invalid or expired token";
+        // Handle invalid or expired token cases
+        if (existingToken == null || !isTokenValid) {
+            throw new IllegalArgumentException("Token is expired or invalid");
+        }
+
+        // Default case for incorrect token
+        throw new IllegalArgumentException("Invalid token");
     }
+
 
     @Override
     public void newVerificationLink(String email) {
