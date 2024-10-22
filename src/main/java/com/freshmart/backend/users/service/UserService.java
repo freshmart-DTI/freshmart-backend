@@ -20,7 +20,7 @@ public interface UserService {
 
     User setPassword(ManagePasswordDto data);
 
-    String verifyEmail(VerifyEmailDto data);
+    boolean verifyEmail(VerifyEmailDto data);
 
 
     void newVerificationLink(String email);

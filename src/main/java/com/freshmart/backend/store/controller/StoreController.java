@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/stores")
 @Validated
@@ -18,6 +20,13 @@ public class StoreController {
 
     public StoreController(StoreServiceImpl storeService) {
         this.storeService = storeService;
+    }
+
+    @GetMapping()
+    public ResponseEntity<?> getAllStores() {
+        List<Store> stores = storeService.getAllStores();
+
+        return Response.success("List of stores fetched", stores);
     }
 
     @PostMapping()

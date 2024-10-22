@@ -40,7 +40,9 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public List<Store> getAllStores() {
-        return List.of();
+        List<Store> stores = storeRepository.findAll();
+
+        return stores;
     }
 
     @Override
@@ -81,6 +83,13 @@ public class StoreServiceImpl implements StoreService {
 
         StoreWithProductsDto storeDto = new StoreWithProductsDto();
         storeDto.setId(store.getId());
+        storeDto.setName(store.getName());
+        storeDto.setCity(store.getCity());
+        storeDto.setProvince(store.getProvince());
+        storeDto.setDistrict(store.getDistrict());
+        storeDto.setIsMain(store.getIsMain());
+        storeDto.setLatitude(store.getLatitude());
+        storeDto.setLongitude(store.getLongitude());
 
         Map<Long, Integer> stockMap = inventoryService.getStockByStore(store);
 

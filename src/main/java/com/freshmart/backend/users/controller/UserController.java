@@ -5,6 +5,7 @@ import com.freshmart.backend.users.dto.*;
 import com.freshmart.backend.users.entity.User;
 import com.freshmart.backend.users.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -49,8 +50,13 @@ public class UserController {
     }
 
     @PostMapping("/verify-email")
-    public ResponseEntity<Response<String>> isVerifiedLinkValid(@RequestBody VerifyEmailDto data){
-        return Response.success("Verification link status has been fetched", userService.verifyEmail(data));
+    public ResponseEntity<?> isVerifiedLinkValid(@RequestBody VerifyEmailDto data){
+        boolean isVerified = userService.verifyEmail(data);
+        if(isVerified) {
+            return Response.success("Verification link status has been fetched");
+        } else {
+            return Response.failed(HttpStatus.BAD_REQUEST.value(),"Invalid verification token");
+        }
     }
 
     @PostMapping("/verify-password-reset")
